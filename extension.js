@@ -21,6 +21,7 @@ function activate(context) {
         const curWindow = vscode.window;
         const editor = curWindow.activeTextEditor;
         let content = editor.document.getText();
+        let workspaceEdit = new vscode.WorkspaceEdit()
         // Display a message box to the user
         if(!clipContent.length) {
             curWindow.showInformationMessage("There's nothing on the clipboard!");
@@ -31,12 +32,8 @@ function activate(context) {
         while(len--) {
             let obj = arrRequire[len];
             let index = content.indexOf(obj.replacePath);
-            let length = obj.replacePath.length;
             if(index !== -1) {
-                let quote = content.charAt(index - 1);
-                editor.edit(function(textEditorEdit) {
-                    textEditorEdit.replace(new Range(index, index + length),obj.targetPath)
-                })
+                workspaceEdit.replace(editor.document.uri, new Range(index, index + length), obj.targetPath)
             }
         }
 
